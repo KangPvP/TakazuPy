@@ -43,7 +43,6 @@ def lecture(nom_fic):
     return automate
 
 
-
 def affiche(g):
     """Cette fonction affiche la grille formatée comme il faut dans la console d'éxecution
     paramètre : (list) liste de liste carré et de taille pair
@@ -52,12 +51,35 @@ def affiche(g):
     alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
     for i in range(len(g)):
-        for y in range(len(g[i])):
-            ligne = ligne + g[i][y]
-        print(ligne)
+        ligne = ""
 
+        #Execution 1 seul fois pour la première ligne et pour affichier le numéro de chaque colonne
+        if(i == 0):
+            for y in range(len(g[0])):
+                ligne = ligne + " " + str(y+1)
+            print(" " + ligne)
+            ligne = "" #Remise à 0 de la variable Ligne
+
+        for y in range(len(g[i])):
+
+            if(y == len(g[i])-1): #Execution a l'arrivé du derniere chiffre de chaque ligne pour ne pas afficher: |
+                ligne = ligne + replaceCaractere(g[i][y])
+            else:
+                ligne = ligne + replaceCaractere(g[i][y]) + "|"
+
+        print(alpha[i] + " " + ligne)
+    return
+
+def replaceCaractere(a):
+    if(a == 9):
+        return "*"
+    elif(a == 0):
+        return "0"
+    elif(a == 1):
+        return "1"
    
-    
+affiche(lecture("grille4x4_1"))
+
 
 #
 ###
@@ -77,14 +99,25 @@ def demande_coup() :
     Paramètre : aucun
     Sortie : (str,int) une chaine de caractère correspondant au coup joué et un entier correspondant à la valeur du coup joué.
     """ 
-    pass
+    case = input("Dans quel case souhaites tu joué ?")
+    valeur = input("Veux tu mettre un 1 ou un 0 dans cette case ?")
+
+    return (case, valeur)
+
     
 def coord_coup_joue(case) :
     """ Fonction qui transforme la case jouée par le joueur au format texte (exemple A1) en coordonnées entières pour retrouver la valeur dans la grille de Takuzu au format liste de liste.
     Paramètre : (str) une chaine de caractère de longueur 2 au format attendu.
     Sortie : (int,int) un couple d'entiers correspondant à la case jouée dans la grille de Takuzu.
     """
-    pass
+
+    alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    ligne = alpha.index(case[0])
+    colonne = int(case[1])-1
+
+    return (ligne, colonne)
+
+
     
 def joue_coup(g,l,c,v) :
     """ Fonction qui joue un coup dans la grille g à la ligne l colonne c avec la valeur v.

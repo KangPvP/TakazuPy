@@ -10,8 +10,6 @@ import sys
 # Pour jouer en mode console, on éxecute la commande takuzu('grille4x4_1') pour jouer avec la grille correspondante qui est donnée en format .txt.
 # Pour jouer en mode graphique sur pygame, on éxecute la fonction takuzu_graphique('grille4x4_1') pour jouer avec la grille correspondante qui est donnée en format .txt.
 
-
-
 #
 ###
 #####
@@ -19,7 +17,6 @@ import sys
 #####
 ###
 #
-
 
 ## Création et affichage de la grille
 
@@ -60,25 +57,23 @@ def affiche(g):
             print(" " + ligne)
             ligne = "" #Remise à 0 de la variable Ligne
 
-        for y in range(len(g[i])):
-
+        for y in range(len(g[0])):
             if(y == len(g[i])-1): #Execution a l'arrivé du derniere chiffre de chaque ligne pour ne pas afficher: |
                 ligne = ligne + replaceCaractere(g[i][y])
             else:
                 ligne = ligne + replaceCaractere(g[i][y]) + "|"
 
         print(alpha[i] + " " + ligne)
+
     return
 
 def replaceCaractere(a):
     if(a == 9):
         return "*"
-    elif(a == 0):
+    elif(a == 0 or a == 2):
         return "0"
-    elif(a == 1):
+    elif(a == 1 or a == 3):
         return "1"
-   
-affiche(lecture("grille4x4_1"))
 
 
 #
@@ -100,6 +95,7 @@ def demande_coup() :
     Sortie : (str,int) une chaine de caractère correspondant au coup joué et un entier correspondant à la valeur du coup joué.
     """ 
     case = input("Dans quel case souhaites tu joué ?")
+
     valeur = input("Veux tu mettre un 1 ou un 0 dans cette case ?")
 
     return (case, valeur)
@@ -118,23 +114,69 @@ def coord_coup_joue(case) :
     return (ligne, colonne)
 
 
-    
+#Modification de la fonction pour que la ligne et la collonne prenne un tuple en paramètre
 def joue_coup(g,l,c,v) :
     """ Fonction qui joue un coup dans la grille g à la ligne l colonne c avec la valeur v.
     Paramètres : (liste,int,int,int) une grille g de Takuzu au format liste de liste, un entier l correspondant à la ligne jouée, un entier c correspondant à la colonne jouée, un entier v (0 ou 1) correspondant à la valeur jouée.
     Sortie : (list) la grille g de Takuzu au format liste de liste mise à jour avec la valeur jouée.
     """
-    pass   
     
- 
+    if(v == 0):
+        g[l][c] = 2
+    else:
+        g[l][c] = 3
+
+    return g
+
+
+def grille_remplie(g):
+    """ Fonction qui vérifie si la grille g de TAKUZU entrée en paramètre contient des cases non jouées.
+    Paramètre : (list) une grille de Takuzu au format liste de liste
+    Sortie : (bool) un booléen indiquant si la grille de Takuzu est complète
+    """
+    for l in range(len(g)):
+        for c in range(len(g[0])):
+            if (g[l][c] == 9):
+                return False
+
+    return True
+
+def verification(grille, colonne, ligne, valeur):
     
+    #Ligne qui test si la case demandé existe ex: A7
+    if ligne < 0 or ligne >= len(grille) or colonne < 0 or colonne >= len(grille[0]):
+        return (False, "Cette case n'est pas présante merci de renseigner une autre case")
+    
+    if grille[ligne][colonne] == 0 or grille[ligne][colonne] == 1:
+        return (False, "Cette case ne peut pas être modifié")
+    
+    if valeur not in [0, 1]: 
+        return (False, "Valeur saisi est incorrect: entrez 0 ou 1")
+
+    return (True, "")
+
 def takuzu(grille) :
     """ Fonction qui gère le déroulement d'une partie de TAKUZU """
-    pass 
+    affiche(grille)
 
-    
-#
-###
+    while not grille_remplie(grille):
+        case, valeur = demande_coup()
+        ligne, colonne = coord_coup_joue(case)
+        
+        status, msgError = verification(grille, ligne, colonne, int(valeur))
+
+        if status:
+            grille = joue_coup(grille, ligne, colonne, int(valeur))
+            affiche(grille)
+        else:
+            print(msgError)
+
+    print("Bravo")
+
+takuzu(lecture("grille4x4_1"))
+
+
+
 #####
 ####################@
 #####
@@ -142,6 +184,7 @@ def takuzu(grille) :
 #     
 
 ## Fonctions pour tester la validité d'une grille avec les 3 règles
+        
 
 
 def rotation(g) :
@@ -151,14 +194,7 @@ def rotation(g) :
     """
     pass
 
-def grille_remplie(g) :
-    """ Fonction qui vérifie si la grille g de TAKUZU entrée en paramètre contient des cases non jouées.
-    Paramètre : (list) une grille de Takuzu au format liste de liste
-    Sortie : (bool) un booléen indiquant si la grille de Takuzu est complète
-    """
-    pass
-    
-    
+
 def verif_nb_0_nb_1(g) :
     """ Cette fontion vérifie que pour chaque ligne et chaque colonne de la grille g entrée en paramètre, le nombre de 0 et de 1 est égal à niveau/2.
     Paramètre : (list) un grille de Takuzu au format liste de liste 

@@ -1,9 +1,6 @@
 from random import*
 from copy import* 
-import pygame
-from pygame.locals import*
-import sys
-
+import pygame, sys
 ## Utilisation fichier
 ## Mode d'emploi
 
@@ -173,7 +170,7 @@ def takuzu(grille) :
 
     print("Bravo")
 
-takuzu(lecture("grille4x4_1"))
+#takuzu(lecture("grille4x4_1"))
 
 
 
@@ -232,3 +229,20 @@ def verif_ligne_colonne(g) :
 
 
 # À FAIRE POUR CEUX QUI LE SOUHAITENT
+
+
+def takuzu_graphique():
+
+    pygame.init()
+    screen = pygame.display.set_mode((800, 600))
+    clock = pygame.time.Clock()
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                exit()
+
+
+    pygame.quit()
+
+takuzu_graphique()

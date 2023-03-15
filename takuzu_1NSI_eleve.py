@@ -65,6 +65,10 @@ def affiche(g):
     return
 
 def replaceCaractere(a):
+    """Cette fonction renvoie le caractère graphique utilisé pour l'affichage de la grille
+    paramètre : (int) un caractères (chiffre) de la grille
+    sortie: (str) le caractères graphique associer au paramètre
+    """
     if(a == 9):
         return "*"
     elif(a == 0 or a == 2):
@@ -84,8 +88,6 @@ def replaceCaractere(a):
 
 
 ## Fonctions de jeu
-
-    
 def demande_coup() :
     """ Fonction qui demande au joueur la case dans laquelle il souhaite jouer et la valeur du coup jouée.
     Paramètre : aucun
@@ -230,19 +232,129 @@ def verif_ligne_colonne(g) :
 
 # À FAIRE POUR CEUX QUI LE SOUHAITENT
 
+def takuzu_graphique(grille):
 
-def takuzu_graphique():
-
+    # Initialisation de Pygame
     pygame.init()
-    screen = pygame.display.set_mode((800, 600))
-    clock = pygame.time.Clock()
 
-    while True:
+    # Donnée relative au jeu
+    hauteur = len(grille)
+    largeur = len(grille[0])
+    x0, y0, case = cal_data_grille(largeur, hauteur)
+    ZoneCustom = pygame.Rect(x0, y0, largeur * case, hauteur * case)
+
+    #Création de la fenetre
+    ecran = pygame.display.set_mode([900,700])
+    pygame.display.set_caption("Takuzu")
+
+    ecran.fill((255,255,255))
+    affiche_titre(ecran)
+    affiche_btn(ecran)
+    affiche_graphique(grille, x0, y0, case, ecran)
+    pygame.display.flip()
+
+    continuer = True
+    while continuer:
         for event in pygame.event.get():
+            # Si l'utilisateur quitte, on met la variable "continuer" à False
             if event.type == pygame.QUIT:
-                exit()
+                continuer = False
 
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                x, y = event.pos
+                if ZoneCustom.collidepoint(x, y):
+                    nbX = (x - x0) // case
+                    nbY = (y - y0) // case
 
+                    if not grille[nbY][nbX] == 0 and not grille[nbY][nbX] == 1:
+                        if grille[nbY][nbX] == 2:
+                            grille[nbY][nbX] = 3
+                        else:
+                            grille[nbY][nbX] = 2
+
+                    affiche_graphique(grille, x0, y0, case, ecran)
+                    pygame.display.flip()
+            
+
+    # Quitter Pygame
     pygame.quit()
 
-takuzu_graphique()
+def affiche_graphique(a, x0, y0, cote, ecran):
+    
+    fonte = pygame.font.SysFont(None, 50)
+    # Définir les couleurs
+    couleur_aqua = (66,224,212)
+    couleur_black = (0, 0, 0)
+    couleur_blue = (0, 0, 255)
+
+    hauteur = len(a)
+    largeur = len(a[0])
+
+    pygame.draw.rect(ecran, couleur_aqua, [x0, y0, largeur * cote, hauteur * cote])
+
+    for l in range(hauteur):
+        for c in range(largeur):
+            case = pygame.Rect(x0 + c*cote, y0+l*cote,cote,cote)
+            pygame.draw.rect(ecran, couleur_black, case,2)
+
+            value, color, display = 9, couleur_black, True
+
+            if a[l][c] == 0:
+                value = 0
+                color = couleur_blue
+            elif a[l][c] == 2:
+                value = 0
+                color = couleur_black
+            elif a[l][c] == 1:
+                value = 1
+                color = couleur_blue
+            elif a[l][c] == 3:
+                value = 1
+                color = couleur_black
+            else:
+                display = False
+            
+            if(display):
+                texte = fonte.render(str(value), True,color)
+                texte_rect = texte.get_rect()
+                texte_rect.center = case.center
+
+                ecran.blit(texte,texte_rect)
+
+    pygame.draw.rect(ecran, (0,0,0), [x0, y0, largeur * cote, hauteur * cote],5)
+
+
+
+def cal_data_grille(largeur, hauteur): #Calcule de données relative a un Automate
+    xm, ym = 500, 500
+
+    case = xm // max(hauteur, largeur)
+    x0 = 200 + (xm - case * largeur) // 2
+    y0 = 85 + (ym - case * hauteur) // 2
+
+    return x0, y0, case
+
+def affiche_titre(ecran):
+    fonte = pygame.font.SysFont(None, 90)
+    texte = fonte.render("Takuzu", True,(0,0,0))
+    texte_rect = texte.get_rect()
+    texte_rect.center = (450,30)
+    ecran.blit(texte,texte_rect)
+
+
+def affiche_btn(ecran):
+    rectangle = pygame.Rect(0,0,150,55)
+    rectangle.center = 450, 640
+
+    pygame.draw.rect(ecran, (0, 200, 0), rectangle, 0, 6)  # fond BTN
+    pygame.draw.rect(ecran, (50, 50, 50), rectangle, 2, 6)  # contour BTN
+
+    fonte = pygame.font.SysFont(None, 50)
+    texte = fonte.render("Valider", True,(0,0,0))
+    texte_rect = texte.get_rect()
+    texte_rect.center = rectangle.center
+    ecran.blit(texte,texte_rect)
+
+    return rectangle
+
+takuzu_graphique(lecture("grille4x4_1"))

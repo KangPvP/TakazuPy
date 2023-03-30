@@ -172,7 +172,7 @@ def takuzu(grille) :
 
     print("Bravo")
 
-#takuzu(lecture("grille4x4_1"))s
+#takuzu(lecture("grille4x4_1"))ss
 
 
 

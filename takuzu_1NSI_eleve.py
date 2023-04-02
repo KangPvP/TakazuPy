@@ -141,6 +141,16 @@ def grille_remplie(g):
     return True
 
 def verification(grille, ligne, colonne, valeur):
+    """Dans cette fonction 3 verifications sont effectuées:
+        - Test si la case est présante dans la grille: (A7)
+        - Test si la case peut être modifié
+        - Test si la valeur saisi est correct: (0 ou 1)
+    Cette fonction permet d'évité les principales erreurs, et dans un même temps d'avertir le joueur dans le cas ou l'action qu'il shouaite effectué soit impossible a réaliser.
+
+    Paramètre : (list, int, int, int) paramètre (grille, ligne, colonne, valeur)
+
+    Sortie: (Boolean, Str) Cette fonction renvoie 2 elements différant sous la forme d'un tuple. Le premier element correspond à validié de l'action faite par la joueur. Le deuzième element correspond au message d'erreur si validié fausse il y a.
+    """
     
     #Ligne qui test si la case demandé existe ex: A7
     if ligne < 0 or ligne >= len(grille) or colonne < 0 or colonne >= len(grille[0]):
@@ -153,6 +163,8 @@ def verification(grille, ligne, colonne, valeur):
         return (False, "Valeur saisi est incorrect: entrez 0 ou 1")
 
     return (True, "")
+
+
 
 def takuzu(grille) :
     """ Fonction qui gère le déroulement d'une partie de TAKUZU """
@@ -220,7 +232,7 @@ def verif_nb_0_nb_1(g) :
     
 
 def verif_0_1_boucle(g):
-
+    """Fonction en lien avec verif_nb_0_nb_1(g)""" 
     for l in range(len(g)):
         nb0, nb1 = 0, 0
         for c in range(len(g[0])):
@@ -230,6 +242,8 @@ def verif_0_1_boucle(g):
                 nb1 = nb1 + 1
         if(nb0 != nb1):
             return False
+        
+    return True
 
 def verif_000_111(g) :
     """ Cette fontion vérifie que pour chaque ligne et chaque colonne de la grille g entrée en paramètre, il n'y a jamais plus de deux 0 ou de deux 1 adjacents
@@ -243,7 +257,7 @@ def verif_000_111(g) :
         return False
 
 def verif_000_111_boucle(g) :
-
+    """Fonction en lien avec verif_000_111_boucle(g)""" 
     for l in range(len(g)):
         nbAdj0, nbAdj1 = 0, 0
         for c in range(len(g[0])):
@@ -272,6 +286,7 @@ def verif_ligne_colonne(g) :
         return False
     
 def verif_ligne_colonne_boucle(g):
+    """Fonction en lien avec verif_ligne_colonne(g)""" 
 
     ltest = []
     for l in g:
@@ -305,7 +320,7 @@ def takuzu_graphique(grille):
     hauteur = len(grille)
     largeur = len(grille[0])
     x0, y0, case = cal_data_grille(largeur, hauteur)
-    ZoneCustom = pygame.Rect(x0, y0, largeur * case, hauteur * case)
+    zoneCustom = pygame.Rect(x0, y0, largeur * case, hauteur * case)
 
     #Création de la fenetre
     ecran = pygame.display.set_mode([900,700])
@@ -313,10 +328,11 @@ def takuzu_graphique(grille):
 
     ecran.fill((255,255,255))
     affiche_titre(ecran)
-    affiche_btn(ecran)
+    btnValide = affiche_btn(ecran)
     affiche_graphique(grille, x0, y0, case, ecran)
     pygame.display.flip()
 
+    valideClick = False
     continuer = True
     while continuer:
         for event in pygame.event.get():
@@ -326,19 +342,36 @@ def takuzu_graphique(grille):
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 x, y = event.pos
-                if ZoneCustom.collidepoint(x, y):
-                    nbX = (x - x0) // case
-                    nbY = (y - y0) // case
+                if zoneCustom.collidepoint(x, y):
+                    if not valideClick:
 
-                    if not grille[nbY][nbX] == 0 and not grille[nbY][nbX] == 1:
-                        if grille[nbY][nbX] == 2:
-                            grille[nbY][nbX] = 3
-                        else:
-                            grille[nbY][nbX] = 2
+                        nbX = (x - x0) // case
+                        nbY = (y - y0) // case
 
-                    affiche_graphique(grille, x0, y0, case, ecran)
-                    pygame.display.flip()
-            
+                        if not grille[nbY][nbX] == 0 and not grille[nbY][nbX] == 1:
+                            if grille[nbY][nbX] == 2:
+                                grille[nbY][nbX] = 3
+                            else:
+                                grille[nbY][nbX] = 2
+
+                        affiche_graphique(grille, x0, y0, case, ecran)
+                        pygame.display.flip()
+
+                elif btnValide.collidepoint(x, y):
+                    if grille_remplie:
+
+                        if not valideClick:
+                            valideClick = True
+
+                            if(verif_nb_0_nb_1(grille) and verif_nb_0_nb_1(grille) and verif_ligne_colonne(grille)):
+
+                                affiche_win_lose(ecran, True,"Felicitation vous avez Gagné")
+                                
+                            else:
+                                affiche_win_lose(ecran, False,"Désolé vous avez Perdu")
+                    
+                    else:
+                        print("Error la grille n'est pas complètement remplie")
 
     # Quitter Pygame
     pygame.quit()
@@ -421,5 +454,25 @@ def affiche_btn(ecran):
 
     return rectangle
 
-#A2takuzu_graphique(lecture("grille4x4_1"))
-takuzu(lecture("grille4x4_1"))
+def affiche_win_lose(ecran, winOk, winlose):
+    
+
+    fonte = pygame.font.SysFont(None, 90)
+
+    if(winOk):
+        texte = fonte.render(winlose, True, (0, 200, 0))
+        texte_rect = texte.get_rect()
+        texte_rect.center = (450,300)
+        ecran.blit(texte,texte_rect)
+    else:
+        texte = fonte.render(winlose, True,(200,0,0))
+        texte_rect = texte.get_rect()
+        texte_rect.center = (450,300)
+        ecran.blit(texte,texte_rect)
+
+
+    pygame.display.flip()
+    
+
+#takuzu_graphique(lecture("grille10x10_1"))
+#takuzu(lecture("grille4x4_1"))

@@ -273,6 +273,7 @@ def verif_000_111_boucle(g) :
                 return False
     return True
     
+    
 
 def verif_ligne_colonne(g) :
     """ Cette fontion vérifie que chaque ligne et chaque colonne de la grille g entrée en paramètre est unique.

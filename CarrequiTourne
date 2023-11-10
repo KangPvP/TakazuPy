@@ -1,0 +1,46 @@
+from turtle import *
+from math import *
+
+def carreTaille1(taille):
+    for i in range(2):
+        forward(taille)
+        left(90)
+    forward(taille/2)
+    
+def carreTaille2(taille):
+    
+    forward(taille/2)
+    left(90)
+    forward(taille)
+        
+def complete(coteTaille):
+    forward(coteTaille)
+    left(90+45)
+
+def carre_qui_tourneR(taille, nb, etape=0):
+    
+    #Condition de Fin
+    if(etape == -nb):
+        return
+    
+    
+    #Condition premier carre
+    elif(etape > 0):
+        taille = sqrt(2)*taille/2
+        carreTaille1(taille)
+        left(45)
+        carre_qui_tourneR(taille, nb, etape-1)
+    
+    #Condition carre millieu
+    elif(etape == 0):
+        right(45)
+        
+        carreTaille2(taille)
+        left(45)
+        carre_qui_tourneR(taille/sqrt(2)*2, nb, etape-1)
+        
+    #Condition completer la figure
+    else:
+        carreTaille2(taille)
+        left(45)
+        carre_qui_tourneR(taille/sqrt(2)*2, nb, etape-1)

@@ -1,5 +1,6 @@
-from random import*
-from copy import* 
+from random import *
+from copy import *
+import os 
 import pygame, sys
 ## Utilisation fichier
 ## Mode d'emploi
@@ -476,3 +477,188 @@ def affiche_win_lose(ecran, winOk, winlose):
 
 #takuzu_graphique(lecture("grille10x10_1"))
 #takuzu(lecture("grille4x4_1"))
+
+
+def generation_takuzu(taille):
+    grille = [[9 for i in range(taille)] for i in range(taille)]  # Crée une grille vide
+    
+    print(grille)
+    
+    def placement_valide(ligne, colonne, valeur):
+        
+        #On vérifie si il y a la valeur opposé qui occupe 50% de la ligne ou de la colonne
+        ligne_count = 0
+        for i in range(len(grille[ligne])):
+            if grille[ligne][i] == (1 - valeur):
+                ligne_count += 1
+                
+        colonne_count = 0
+        for i in range(taille):
+            if grille[i][colonne] == (1 - valeur):
+                colonne_count += 1
+                
+        if ligne_count == taille // 2 or colonne_count == taille // 2:
+            return False
+        
+        #On vérifie qu'il ny ai pas plus de 3 fois la même valeurs cote à cote, sur la ligne puis sur la colonne
+        if ligne >= 2:
+            valeur_ligne = True
+            for i in range(ligne - 2, ligne):
+                if grille[i][colonne] != valeur:
+                    valeur_ligne = False
+                    break
+            if valeur_ligne:
+                return False
+        
+        if colonne >= 2:
+            valeur_colonne = True
+            for i in range(colonne - 2, colonne):
+                if grille[ligne][i] != valeur:
+                    valeur_colonne = False
+                    break
+            if valeur_colonne:
+                return False
+        return True
+                
+    
+    # Fonction pour vérifier si le placement d'un chiffre est valid
+    
+    # Fonction pour remplir la grille
+    def remplir_grille(ligne, colonne):
+        if ligne == taille: # La grille est remplie
+            return True  
+    
+        ligne_suiv, colonne_suiv = ligne, colonne + 1
+        if colonne_suiv == taille:
+            ligne_suiv, colonne_suiv = ligne + 1, 0
+        
+        
+        
+        for valeur in sample([0, 1], 2):  # Mélange aléatoire des choix
+            if placement_valide(ligne, colonne, valeur):
+                grille[ligne][colonne] = valeur
+                if remplir_grille(ligne_suiv, colonne_suiv):
+                    return True
+                grille[ligne][colonne] = 9  # Annule le placement si cela ne mène pas à une solution valide
+        return False
+    
+    # Remplissage initial de la grille
+    remplir_grille(0, 0)
+    return grille
+
+def solver_takuzu(taille):
+    grille = [[0, 1, 0, 1, 0, 9, 1], [1, 0, 1, 0, 9, 1, 0], [1, 0, 1, 0, 1, 1, 0], [0, 1, 0, 9, 0, 0, 1], [1, 0, 1, 0, 1, 1, 0], [1, 0, 1, 9, 1, 1, 0], [0, 9, 9, 1, 0, 0, 1]]  # Crée une grille vide
+    
+    def placement_valides(ligne, colonne, valeur):
+        
+        #On vérifie si il y a la valeur opposé qui occupe 50% de la ligne ou de la colonne
+        ligne_count = 0
+        for i in range(len(grille[ligne])):
+            if grille[ligne][i] == (1 - valeur):
+                ligne_count += 1
+                
+        colonne_count = 0
+        for i in range(taille):
+            if grille[i][colonne] == (1 - valeur):
+                colonne_count += 1
+                
+        if ligne_count == taille // 2 or colonne_count == taille // 2:
+            return False
+        
+        #On vérifie qu'il ny ai pas plus de 3 fois la même valeurs cote à cote, sur la ligne puis sur la colonne
+        if ligne >= 2:
+            valeur_ligne = True
+            for i in range(ligne - 2, ligne):
+                if grille[i][colonne] != valeur:
+                    valeur_ligne = False
+                    break
+            if valeur_ligne:
+                return False
+        
+        if colonne >= 2:
+            valeur_colonne = True
+            for i in range(colonne - 2, colonne):
+                if grille[ligne][i] != valeur:
+                    valeur_colonne = False
+                    break
+            if valeur_colonne:
+                return False
+        return True
+                
+    
+    # Fonction pour vérifier si le placement d'un chiffre est valid
+    
+    # Fonction pour remplir la grille
+    def remplir_grilles(ligne, colonne):
+        if ligne == taille: # La grille est remplie
+            return True  
+    
+        ligne_suiv, colonne_suiv = ligne, colonne + 1
+        if colonne_suiv == taille:
+            ligne_suiv, colonne_suiv = ligne + 1, 0
+        print("number")
+        
+        if(grille[ligne][colonne] == 9):
+            for valeur in sample([0, 1], 2):  # Mélange aléatoire des choix
+                if(grille[ligne][colonne] == 9):
+                    if placement_valides(ligne, colonne, valeur):
+                        print("number")
+                        grille[ligne][colonne] = valeur
+
+                if placement_valides(ligne, colonne, valeur):
+                    if(grille[ligne][colonne] == 9):
+                        print("number")
+                        grille[ligne][colonne] = valeur
+                    if remplir_grilles(ligne_suiv, colonne_suiv):
+                        return True
+                    grille[ligne][colonne] = 9  # Annule le placement si cela ne mène pas à une solution valide
+                    
+        if remplir_grilles(ligne_suiv, colonne_suiv):
+            return True
+
+
+        return False
+    
+    # Remplissage initial de la grille
+    remplir_grilles(0, 0)
+    return grille
+
+
+def grilleToFichier(grille):
+    """Cette fonction permet """
+    taille = len(grille)
+    
+    
+    aleatoireNumber = randint(100,999)
+    nom_fichier = "grille" + str(taille) + "x" + str(taille) + "_" + str(aleatoireNumber) + ".txt"
+
+    print(nom_fichier)
+    fichier = open(nom_fichier, "w+", encoding='utf-8')
+    
+    for i in range(taille):
+        for y in range(taille):
+            fichier.write(str(grille[i][y]))
+        fichier.write("\n")
+        
+    fichier.close()
+    
+# Exemple d'utilisation
+taille = 7
+takuzu_grille = solver_takuzu(taille)
+print(takuzu_grille)
+for ligne in takuzu_grille:
+    print(str(ligne))
+    
+#grilleToFichier(takuzu_grille)
+
+#def takuzu_difficulte(pourcentage):
+
+
+    
+
+   #répartitions taches
+   #modélisation
+   #problèmes rencontésd
+   #mode emploi pour le programme 
+
+

@@ -11,8 +11,15 @@ def remplir_grille(grille, ligne, colonne):
         return True
     
     # Calculer la prochaine ligne et colonne
-    prochaine_ligne = ligne if colonne < len(grille) - 1 else ligne + 1
-    prochaine_colonne = colonne + 1 if colonne < len(grille) - 1 else 0
+    if colonne < len(grille) - 1:
+        prochaine_ligne = ligne 
+    else:
+        prochaine_ligne = ligne + 1
+
+    if colonne < len(grille) - 1:
+        prochaine_colonne = colonne + 1 
+    else:
+        prochaine_colonne = 0
     
     # Remplir la case actuelle avec 0 ou 1 et vérifier si la grille est valide
     for num in sample([0, 1], 2):
@@ -34,13 +41,13 @@ def est_valide(grille, ligne, colonne):
     
     # Compter le nombre de 0 et de 1 dans la ligne et la colonne
     for i in range(taille):
-        if grille[ligne][i] == '0':
+        if grille[ligne][i] == 0:
             nb_zeros_ligne += 1
-        elif grille[ligne][i] == '1':
+        elif grille[ligne][i] == 1:
             nb_uns_ligne += 1
-        if grille[i][colonne] == '0':
+        if grille[i][colonne] == 0:
             nb_zeros_colonne += 1
-        elif grille[i][colonne] == '1':
+        elif grille[i][colonne] == 1:
             nb_uns_colonne += 1
     
     # Vérifier si le nombre de 0 ou de 1 dépasse la moitié de la taille de la grille
@@ -77,6 +84,7 @@ def resoudre_recursive(grille, solutions):
                     if est_valide(grille, i, j):
                         resoudre_recursive(grille, solutions)
                     grille[i][j] = 9  # Retour à une case vide (représentée par 9)
+                return
 
 def est_complete(grille):
     for ligne in grille:

@@ -475,14 +475,12 @@ def affiche_win_lose(ecran, winOk, winlose):
     pygame.display.flip()
     
 
-#takuzu_graphique(lecture("grille10x10_1"))
+#takuzu_graphique(lecture("grille6x6_1"))
 #takuzu(lecture("grille4x4_1"))
 
 
-def generation_takuzu(taille):
-    grille = [[9 for i in range(taille)] for i in range(taille)]  # Crée une grille vide
-    
-    print(grille)
+def generation_takuzu(grille):
+    taille = len(grille)
     
     def placement_valide(ligne, colonne, valeur):
         
@@ -519,6 +517,23 @@ def generation_takuzu(taille):
             if valeur_colonne:
                 return False
         return True
+    def is_valid(grid, row, col):
+        # Vérifie si une ligne ou une colonne contient plus de deux chiffres identiques consécutifs
+        row_count_0 = sum(1 for i in range(len(grid)) if grid[row][i] == '0')
+        row_count_1 = sum(1 for i in range(len(grid)) if grid[row][i] == '1')
+        col_count_0 = sum(1 for i in range(len(grid)) if grid[i][col] == '0')
+        col_count_1 = sum(1 for i in range(len(grid)) if grid[i][col] == '1')
+        
+        if row_count_0 > len(grid) // 2 or row_count_1 > len(grid) // 2 or \
+        col_count_0 > len(grid) // 2 or col_count_1 > len(grid) // 2:
+            return False
+        
+        # Vérifie s'il y a plus de deux chiffres identiques consécutifs dans une ligne ou une colonne
+        if (col >= 2 and grid[row][col - 2] == grid[row][col - 1] == grid[row][col]) or \
+        (row >= 2 and grid[row - 2][col] == grid[row - 1][col] == grid[row][col]):
+            return False
+        
+        return True
                 
     
     # Fonction pour vérifier si le placement d'un chiffre est valid
@@ -531,9 +546,7 @@ def generation_takuzu(taille):
         ligne_suiv, colonne_suiv = ligne, colonne + 1
         if colonne_suiv == taille:
             ligne_suiv, colonne_suiv = ligne + 1, 0
-        
-        
-        
+
         for valeur in sample([0, 1], 2):  # Mélange aléatoire des choix
             if placement_valide(ligne, colonne, valeur):
                 grille[ligne][colonne] = valeur
@@ -546,82 +559,64 @@ def generation_takuzu(taille):
     remplir_grille(0, 0)
     return grille
 
-def solver_takuzu(taille):
-    grille = [[0, 1, 0, 1, 0, 9, 1], [1, 0, 1, 0, 9, 1, 0], [1, 0, 1, 0, 1, 1, 0], [0, 1, 0, 9, 0, 0, 1], [1, 0, 1, 0, 1, 1, 0], [1, 0, 1, 9, 1, 1, 0], [0, 9, 9, 1, 0, 0, 1]]  # Crée une grille vide
-    
-    def placement_valides(ligne, colonne, valeur):
-        
-        #On vérifie si il y a la valeur opposé qui occupe 50% de la ligne ou de la colonne
-        ligne_count = 0
-        for i in range(len(grille[ligne])):
-            if grille[ligne][i] == (1 - valeur):
-                ligne_count += 1
-                
-        colonne_count = 0
-        for i in range(taille):
-            if grille[i][colonne] == (1 - valeur):
-                colonne_count += 1
-                
-        if ligne_count == taille // 2 or colonne_count == taille // 2:
-            return False
-        
-        #On vérifie qu'il ny ai pas plus de 3 fois la même valeurs cote à cote, sur la ligne puis sur la colonne
-        if ligne >= 2:
-            valeur_ligne = True
-            for i in range(ligne - 2, ligne):
-                if grille[i][colonne] != valeur:
-                    valeur_ligne = False
-                    break
-            if valeur_ligne:
-                return False
-        
-        if colonne >= 2:
-            valeur_colonne = True
-            for i in range(colonne - 2, colonne):
-                if grille[ligne][i] != valeur:
-                    valeur_colonne = False
-                    break
-            if valeur_colonne:
-                return False
+print("test")
+grille = [[9 for i in range(6)] for i in range(6)]  # Crée une grille vide
+
+grille = generation_takuzu(grille)
+
+
+def generate_takuzu_grid(size):
+    grid = [[' ' for _ in range(size)] for _ in range(size)]
+    fill_grid(grid, 0, 0)
+    return grid
+
+def fill_grid(grid, row, col):
+    if row == len(grid):
         return True
-                
     
-    # Fonction pour vérifier si le placement d'un chiffre est valid
+    next_row = row if col < len(grid) - 1 else row + 1
+    next_col = col + 1 if col < len(grid) - 1 else 0
     
-    # Fonction pour remplir la grille
-    def remplir_grilles(ligne, colonne):
-        if ligne == taille: # La grille est remplie
-            return True  
-    
-        ligne_suiv, colonne_suiv = ligne, colonne + 1
-        if colonne_suiv == taille:
-            ligne_suiv, colonne_suiv = ligne + 1, 0
-        print("number")
-        
-        if(grille[ligne][colonne] == 9):
-            for valeur in sample([0, 1], 2):  # Mélange aléatoire des choix
-                if(grille[ligne][colonne] == 9):
-                    if placement_valides(ligne, colonne, valeur):
-                        print("number")
-                        grille[ligne][colonne] = valeur
-
-                if placement_valides(ligne, colonne, valeur):
-                    if(grille[ligne][colonne] == 9):
-                        print("number")
-                        grille[ligne][colonne] = valeur
-                    if remplir_grilles(ligne_suiv, colonne_suiv):
-                        return True
-                    grille[ligne][colonne] = 9  # Annule le placement si cela ne mène pas à une solution valide
-                    
-        if remplir_grilles(ligne_suiv, colonne_suiv):
+    for num in sample(['0', '1'], 2):
+        grid[row][col] = num
+        if is_valid(grid, row, col) and fill_grid(grid, next_row, next_col):
             return True
+        grid[row][col] = ' '
+    
+    return False
 
-
+def is_valid(grid, row, col):
+    # Vérifie si une ligne ou une colonne contient plus de deux chiffres identiques consécutifs
+    row_count_0 = sum(1 for i in range(len(grid)) if grid[row][i] == '0')
+    row_count_1 = sum(1 for i in range(len(grid)) if grid[row][i] == '1')
+    col_count_0 = sum(1 for i in range(len(grid)) if grid[i][col] == '0')
+    col_count_1 = sum(1 for i in range(len(grid)) if grid[i][col] == '1')
+    
+    if row_count_0 > len(grid) // 2 or row_count_1 > len(grid) // 2 or \
+       col_count_0 > len(grid) // 2 or col_count_1 > len(grid) // 2:
         return False
     
-    # Remplissage initial de la grille
-    remplir_grilles(0, 0)
-    return grille
+    # Vérifie s'il y a plus de deux chiffres identiques consécutifs dans une ligne ou une colonne
+    if (col >= 2 and grid[row][col - 2] == grid[row][col - 1] == grid[row][col]) or \
+       (row >= 2 and grid[row - 2][col] == grid[row - 1][col] == grid[row][col]):
+        return False
+    
+    return True
+
+
+def print_grid(grid):
+    for row in grid:
+        print(' '.join(row))
+
+size = 4  # Taille de la grille
+grid = generate_takuzu_grid(size)
+print("Grille de Takuzu générée :")
+print(grid)
+print_grid(grid)
+
+
+
+
 
 
 def grilleToFichier(grille):
@@ -641,13 +636,83 @@ def grilleToFichier(grille):
         fichier.write("\n")
         
     fichier.close()
+
+def ligne_valide(grille, ligne):
+    for i in range(len(grille)):
+        if grille[ligne][i] == 9:
+            continue
+        if grille[ligne].count(grille[ligne][i]) > len(grille) // 2:
+            return False
+    return True
+
+def colonne_valide(grille, colonne):
+    colonne_data = [grille[i][colonne] for i in range(len(grille))]
+    for i in range(len(grille)):
+        if colonne_data[i] == 9:
+            continue
+        if colonne_data.count(colonne_data[i]) > len(grille) // 2:
+            return False
+    return True
+
+def est_valide(grille):
+    for i in range(len(grille)):
+        if not ligne_valide(grille, i) or not colonne_valide(grille, i):
+            return False
+    return True
+
+def ligne_est_unique(grille, ligne):
+    for i in range(len(grille)):
+        if grille[ligne][i] == 9:
+            continue
+        if grille[ligne].count(grille[ligne][i]) != 1:
+            return False
+    return True
+
+def resolution_takuzu(grille, ligne=0, colonne=0):
+    if ligne == len(grille):
+        return grille if est_valide(grille) else None
+
+    next_ligne = ligne + 1 if colonne == len(grille) - 1 else ligne
+    next_colonne = 0 if colonne == len(grille) - 1 else colonne + 1
+
+    if grille[ligne][colonne] == 9:
+        for i in range(2):
+            grille[ligne][colonne] = i
+            if (ligne_valide(grille, ligne) and colonne_valide(grille, colonne) and
+                    (colonne == len(grille) - 1 or ligne == len(grille) - 1 or ligne_est_unique(grille, ligne))):
+                result = resolution_takuzu(grille, next_ligne, next_colonne)
+                if result:
+                    return result
+        grille[ligne][colonne] = 9
+    else:
+        return resolution_takuzu(grille, next_ligne, next_colonne)
+
+    return None
+
+# Exemple d'utilisation
+grille = [
+    [1, 0, 9, 9, 1, 1],
+    [9, 0, 0, 9, 0, 0],
+    [0, 1, 0, 1, 0, 9],
+    [9, 0, 1, 0, 1, 1],
+    [1, 0, 0, 1, 9, 0],
+    [0, 1, 9, 9, 0, 0]
+]
+
+solution = resolution_takuzu(grille)
+if solution:
+    for row in solution:
+        print(row)
+else:
+    print("Pas de solution possible")
     
 # Exemple d'utilisation
-taille = 7
-takuzu_grille = solver_takuzu(taille)
-print(takuzu_grille)
-for ligne in takuzu_grille:
-    print(str(ligne))
+    
+# taille = 7
+# takuzu_grille = solver_takuzu(taille)
+# print(takuzu_grille)
+# for ligne in takuzu_grille:
+#     print(str(ligne))
     
 #grilleToFichier(takuzu_grille)
 

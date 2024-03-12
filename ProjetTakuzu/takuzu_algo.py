@@ -15,7 +15,9 @@ def generer_grille_takuzu(taille, pourcentage_remplissage):
     grille = [[9 for i in range(taille)] for i in range(taille)]
     remplir_grille(grille, 0, 0)
 
-
+    while(not verif_ligne_colonne(grille)):  # Teste si la grille générer est correct
+        grille = [[9 for i in range(taille)] for i in range(taille)]
+        remplir_grille(grille, 0, 0)
 
     # Cette boucle retire un certain % des valeurs dans la grille
     for i in range(taille):
@@ -145,7 +147,8 @@ def solveur(grille, solutions):
     taille = len(grille)
 
     if est_complete(grille):
-        solutions.append([[colonne for colonne in ligne] for ligne in grille])
+        if(verif_ligne_colonne(grille)):  # Teste si la solution est correct
+            solutions.append([[colonne for colonne in ligne] for ligne in grille])
         return
     
     for i in range(taille):
@@ -200,6 +203,10 @@ def generer_grille_unique_takuzu(taille):
     # Création d'une grille vide avec des 9
     grille = [[9 for i in range(taille)] for i in range(taille)]
     remplir_grille(grille, 0, 0)
+
+    while(not verif_ligne_colonne(grille)):  # Teste si la grille générer est correct
+        grille = [[9 for i in range(taille)] for i in range(taille)]
+        remplir_grille(grille, 0, 0)
 
     # Cette boucle retire un certain % des valeurs dans la grille
     nb_solution = 1

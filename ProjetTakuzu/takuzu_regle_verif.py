@@ -97,5 +97,3 @@ def verif_ligne_colonne_boucle(g):
             return False
         
     return True
-
-print("oik")

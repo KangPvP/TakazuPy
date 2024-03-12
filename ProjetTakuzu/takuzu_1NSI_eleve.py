@@ -294,7 +294,6 @@ def takuzu_graphique(grille):
                     if not valideClick:
                         grilleSolution = resoudre_takuzu(grille)
                         grille = grilleSolution[0]
-                        print(grille)
                         affiche_graphique(grille, x0, y0, case, ecran)
                         pygame.display.flip()
                     
@@ -431,10 +430,6 @@ def affiche_btn_s(ecran):
     ecran.blit(texte,texte_rect)
 
     return rectangle
-
-
-
-    
 
 #takuzu_graphique(lecture("grille6x6_1"))
 #takuzu(lecture("grille4x4_1"))

@@ -2,41 +2,33 @@ from takuzu_1NSI_eleve import *
 from takuzu_algo import *
 
 taille = 12
-pourcentage = 0
-nberr = 0
-for i in range(10):
-    nom_fichier_grille = generer_grille_takuzu(taille, pourcentage)
-    #nom_fichier_grille = generer_grille_unique_takuzu(taille) # Pour générer une grille unique 
+pourcentage = 20 # Le Pourcentage n'est pas exate il représante une donnée aléatoire
 
-    grille = lecture(nom_fichier_grille)
+#nom_fichier_grille = generer_grille_takuzu(taille, pourcentage)
+nom_fichier_grille = generer_grille_unique_takuzu(taille) # Pour générer une grille unique 
 
-    #Calcule le nombre de case vide dans la grille
-    nb_de_9 = 0
-    for ligne in grille:
-        if 9 in ligne:
-            nb_de_9 += ligne.count(9)
+grille = lecture(nom_fichier_grille)
 
-    solutions = resoudre_takuzu(grille)
-    #print("\nVoici la (ou les) solution(s) trouvée(s) :  (", len(solutions) ,"solution(s) )")
-    # for solution in solutions:
-    #     affiche(solution)
-    #     print("")
-    
-    if(verif_nb_0_nb_1(grille) and verif_000_111(grille) and verif_ligne_colonne(grille)):
+#Calcule le nombre de case vide dans la grille
+nb_de_9 = 0
+for ligne in grille:
+    if 9 in ligne:
+        nb_de_9 += ligne.count(9)
+        
+print("Grille vidée à hauteur de " + str(round(nb_de_9/(taille**2)*100, 2)) + "%")
+affiche(grille)
+
+solutions = resoudre_takuzu(grille)
+
+print("\nVoici la (ou les) solution(s) trouvée(s) :  (", len(solutions) ,"solution(s) )")
+for solution in solutions:
+    affiche(solution)
+    if(verif_nb_0_nb_1(solution) and verif_000_111(solution) and verif_ligne_colonne(solution)):
         print("Bravo, Grille valide")
     else:
-        nberr+=1
-        print("erreur")
-
-print(nberr)
-
-
-
-
-
+        print("Erreur, Grille non valide")
 
 #Possiblité d'utilisé une interface graphique
-
-#takuzu_graphique(lecture(nom_fichier_grille))
+takuzu_graphique(lecture(nom_fichier_grille))
 
 

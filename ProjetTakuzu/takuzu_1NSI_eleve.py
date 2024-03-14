@@ -220,6 +220,8 @@ def takuzu_graphique(grille):
     # Initialisation de Pygame
     pygame.init()
 
+    init_grille = deepcopy(grille)
+
     # Donnée relative au jeu
     hauteur = len(grille)
     largeur = len(grille[0])
@@ -284,15 +286,16 @@ def takuzu_graphique(grille):
                 elif btnGenerer.collidepoint(x, y):
                     if not valideClick:
                         nom_fichier_grille = generer_grille_unique_takuzu(len(grille))
-
+ 
                         grille = lecture(nom_fichier_grille)
+                        init_grille = deepcopy(grille)
 
                         affiche_graphique(grille, x0, y0, case, ecran)
                         pygame.display.flip()
                     
                 elif btnSolution.collidepoint(x, y):
                     if not valideClick:
-                        grilleSolution = resoudre_takuzu(grille)
+                        grilleSolution = resoudre_takuzu(init_grille)
                         grille = grilleSolution[0]
                         affiche_graphique(grille, x0, y0, case, ecran)
                         pygame.display.flip()

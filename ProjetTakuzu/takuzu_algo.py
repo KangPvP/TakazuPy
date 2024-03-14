@@ -112,11 +112,8 @@ def est_valide(grille, ligne, colonne):
     if ligne >= 1 and ligne < taille - 1:
         if grille[ligne - 1][colonne] == grille[ligne][colonne] == grille[ligne + 1][colonne]:
             return False
-
-        
     
-    
-        # Vérifier si deux lignes ou deux colonnes sont identiques
+    # Vérifier si deux lignes ou deux colonnes sont identiques
     for i in range(taille):
         ligne1 = grille[ligne]
         ligne2 = grille[i]

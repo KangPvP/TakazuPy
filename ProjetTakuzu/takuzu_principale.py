@@ -1,11 +1,11 @@
 from takuzu_1NSI_eleve import *
 from takuzu_algo import *
 
-taille = 12
+taille = 6
 pourcentage = 20 # Le Pourcentage n'est pas exate il représante une donnée aléatoire
 
-#nom_fichier_grille = generer_grille_takuzu(taille, pourcentage)
-nom_fichier_grille = generer_grille_unique_takuzu(taille) # Pour générer une grille unique 
+nom_fichier_grille = generer_grille_takuzu(taille, pourcentage)
+#nom_fichier_grille = generer_grille_unique_takuzu(taille) # Pour générer une grille unique 
 
 grille = lecture(nom_fichier_grille)
 

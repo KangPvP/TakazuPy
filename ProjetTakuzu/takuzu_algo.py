@@ -7,7 +7,7 @@ def generer_grille_takuzu(taille, pourcentage_remplissage):
     Paramètres: 
     - taille (int) la taille de la grille
     - pourcentage_remplissage (int) pourcentage des valeurs à retirer dans la grille
-    Sortie: (string) nom du fichier dans le quel la grille à été enregister"""
+    Sortie: (string) nom du fichier dans le quel la grille à été enregistrée"""
 
     assert taille%2 == 0 and taille>3 and taille<13, "la taille de la grille doit être un nombres pairs, compris entre 3 et 13"
 
@@ -25,12 +25,12 @@ def generer_grille_takuzu(taille, pourcentage_remplissage):
             if random() < (pourcentage_remplissage / 100):
                 grille[i][j] = 9
 
-    nom_fichier = grilleToFichier(grille)
+    nom_fichier = grille_to_fichier(grille)
 
     return nom_fichier
 
 def remplir_grille(grille, ligne, colonne):
-    """Cette fonction est une fonction récurscive qui remplit la grille de takuzu
+    """Cette fonction est une fonction récursive qui remplit la grille de takuzu
     Paramètres:
     - grille (list) une grille de takuzu
     - ligne (int) numéro de la ligne
@@ -106,6 +106,7 @@ def est_valide(grille, ligne, colonne):
     if ligne >= 2:
         if grille[ligne - 2][colonne] == grille[ligne - 1][colonne] == grille[ligne][colonne]:
             return False
+    nb_uns_colonne = 0
     if ligne < taille - 2:
         if grille[ligne][colonne] == grille[ligne + 1][colonne] == grille[ligne + 2][colonne]:
             return False
@@ -120,17 +121,17 @@ def est_valide(grille, ligne, colonne):
 
         if i != ligne and ligne1 == ligne2:  # Comparaison de lignes
             return False
+            
+        ## Ce code ne fonctionne pas, il avait pour objectif de vérifier si deux colonnes sont identiques
         
         # colonne1 = [grille[l][colonne] for l in range(taille)]
         # colonne2 = [grille[l][i] for l in range(taille)]
         # if colonne1.count(9) <= 4 and colonne2.count(9) <= 4:
-        #     print(colonne1)
+        #     
         #     if i != colonne and colonne1 == colonne2:  # Comparaison de colonnes
         #         return False
 
     return True
-
-
 
 def resoudre_takuzu(grille):
     solutions = []
@@ -166,14 +167,14 @@ def est_complete(grille):
     return True
 
 
-def grilleToFichier(grille):
+def grille_to_fichier(grille):
     """Cette fonction permet d'enregister la grille dans un fichier .txt
     Paramètre: (list) une grille de takuzu
     Sortie: (string) le nom du fichier .txt"""
     taille = len(grille)
 
     # Creation du nom du fichier    
-    aleatoireNumber = randint(100,999)
+    aleatoireNumber = randint(100,1000)
     nom_fichier = "grille" + str(taille) + "x" + str(taille) + "_" + str(aleatoireNumber)
 
     # Ecriture à l'interieur du fichier
@@ -189,26 +190,25 @@ def grilleToFichier(grille):
     return nom_fichier
 
 def generer_grille_unique_takuzu(taille):
-    """Cette fonction permet de générer une grille de takuzu valide et d'enregister cette grille dans un ficher .txt
+    """Cette fonction permet de générer une grille de takuzu valide avec une seule solution et d'enregistrer cette grille dans un ficher .txt
     Paramètres: 
     - taille (int) la taille de la grille
-    - pourcentage_remplissage (int) pourcentage des valeurs à retirer dans la grille
-    Sortie: (string) nom du fichier dans le quel la grille à été enregister"""
+    Sortie: (string) nom du fichier dans le quel la grille à été enregistré"""
 
-    assert taille%2 == 0 and taille>3 and taille<13, "la taille de la grille doit être un nombres pairs, compris entre 3 et 13"
+    assert taille%2 == 0 and taille>3 and taille<13, "la taille de la grille doit être un nombre pair, compris entre 3 et 13"
 
     # Création d'une grille vide avec des 9
     grille = [[9 for i in range(taille)] for i in range(taille)]
     remplir_grille(grille, 0, 0)
 
-    while(not verif_ligne_colonne(grille)):  # Teste si la grille générer est correct
+    while(not verif_ligne_colonne(grille)):  # Teste si la grille générée est correct
         grille = [[9 for i in range(taille)] for i in range(taille)]
         remplir_grille(grille, 0, 0)
 
-    # Cette boucle retire un certain % des valeurs dans la grille
     nb_solution = 1
     save_grille = [[colonne for colonne in ligne] for ligne in grille]
-
+    
+    # Cette boucle retire des valeurs de la grille jusqu'à la détéction de 2 solutions
     while nb_solution == 1:
         #Choisir une case aléatoire dans la grille
         save_grille = [[colonne for colonne in ligne] for ligne in grille]
@@ -219,7 +219,7 @@ def generer_grille_unique_takuzu(taille):
 
         nb_solution = len(resoudre_takuzu(grille))
 
-    nom_fichier = grilleToFichier(save_grille)
+    nom_fichier = grille_to_fichier(save_grille)
 
     return nom_fichier
 

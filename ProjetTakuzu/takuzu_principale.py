@@ -1,15 +1,17 @@
 from takuzu_1NSI_eleve import *
 from takuzu_algo import *
 
-taille = 6
-pourcentage = 20 # Le Pourcentage n'est pas exate il représante une donnée aléatoire
+#Pour générer une grille exécuter ce fichier, plus d'information voir dans le Carnet de Bord: Mode d'emploi pour le programme
 
-nom_fichier_grille = generer_grille_takuzu(taille, pourcentage)
-#nom_fichier_grille = generer_grille_unique_takuzu(taille) # Pour générer une grille unique 
+taille = 12 # La taille de votre grille
+pourcentage = 20 # Le pourcentage n'est pas exacte il représente une donnée aléatoire
+
+#nom_fichier_grille = generer_grille_takuzu(taille, pourcentage)
+nom_fichier_grille = generer_grille_unique_takuzu(taille) # Pour générer une grille unique 
 
 grille = lecture(nom_fichier_grille)
 
-#Calcule le nombre de case vide dans la grille
+#Calcule le nombre de cases vide dans la grille
 nb_de_9 = 0
 for ligne in grille:
     if 9 in ligne:
@@ -28,7 +30,7 @@ for solution in solutions:
     else:
         print("Erreur, Grille non valide")
 
-#Possiblité d'utilisé une interface graphique
+#Possiblité d'utiliser une interface graphique
 takuzu_graphique(lecture(nom_fichier_grille))
 
 

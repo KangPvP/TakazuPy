@@ -1,4 +1,4 @@
-from random import *
+from random import * # Timothé Loan
 from copy import *
 from takuzu_algo import *
 from takuzu_regle_verif import *

@@ -1,4 +1,4 @@
-from random import *
+from random import * # Timothé Loan
 
 
 def rotation(g) :

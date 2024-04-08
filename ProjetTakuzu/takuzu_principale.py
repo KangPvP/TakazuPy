@@ -1,9 +1,8 @@
-from takuzu_1NSI_eleve import *
-from takuzu_algo import *
+from takuzu_1NSI_eleve import * # Timothé Loan
 
 #Pour générer une grille exécuter ce fichier, plus d'information voir dans le Carnet de Bord: Mode d'emploi pour le programme
 
-taille = 12 # La taille de votre grille
+taille = 4 # La taille de votre grille
 pourcentage = 20 # Le pourcentage n'est pas exacte il représente une donnée aléatoire
 
 #nom_fichier_grille = generer_grille_takuzu(taille, pourcentage)
@@ -25,10 +24,6 @@ solutions = resoudre_takuzu(grille)
 print("\nVoici la (ou les) solution(s) trouvée(s) :  (", len(solutions) ,"solution(s) )")
 for solution in solutions:
     affiche(solution)
-    if(verif_nb_0_nb_1(solution) and verif_000_111(solution) and verif_ligne_colonne(solution)):
-        print("Bravo, Grille valide")
-    else:
-        print("Erreur, Grille non valide")
 
 #Possiblité d'utiliser une interface graphique
 takuzu_graphique(lecture(nom_fichier_grille))
